@@ -6,11 +6,11 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,9 +19,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, android.location.LocationListener {
 
     private static final String TAG = "MapsActivity";
+    private static final int ACCESS_FINE_LOCATION_INT = 10;
     LocationManager locationManager;
     String provider;
 
@@ -36,21 +39,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //checkSelfPermission().
-        //checkPermission()
         Location location = null;
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INT);
         }
 
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            provider = locationManager.getBestProvider(new Criteria(), false);
-            location = locationManager.getLastKnownLocation(provider);
 
+            if(locationManager!=null)
+            {
+                provider = locationManager.getBestProvider(new Criteria(), false);
+                location = locationManager.getLastKnownLocation(provider);
+            }
             if (location != null) {
                 Log.d(TAG, "onCreate: Location info: Location achieved.");
                 Log.i("Location info: ", "Location achieved.");
@@ -59,21 +61,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.i("Location info: ", "No location.");
             }
         }
-        else {
-//            AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-//
-//            dlgAlert.setMessage("The application does not have the correct permissions.");
-//            dlgAlert.setTitle("Error Message");
-//            dlgAlert.setPositiveButton("OK", null);
-//            dlgAlert.setCancelable(true);
-//            dlgAlert.create().show();
-//
-//            dlgAlert.setPositiveButton("Ok",
-//                    new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//
-//                        }
-//                    });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case ACCESS_FINE_LOCATION_INT: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
@@ -88,30 +95,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.i("Longitude: ", lon.toString());
     }
 
-//    @Override
-//    public void onStatusChanged(String provider, int status, Bundle extras) {
-//
-//    }
-//
-//    @Override
-//    public void onProviderEnabled(String provider) {
-//
-//    }
-//
-//    @Override
-//    public void onProviderDisabled(String provider) {
-//
-//    }
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //locationManager.requestLocationUpdates(provider, 400, 1, this);
+
+            if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INT);
+            }
+
+            if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if(locationManager!=null)
+                    locationManager.requestLocationUpdates(provider, 400, 1, this);
+            }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if(locationManager!=null)
+                locationManager.removeUpdates(this);
         }
         else {
-            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INT);
         }
     }
 
