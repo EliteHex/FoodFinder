@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FoodFinder</string>
     <string name="title_activity_maps">Food Finder</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

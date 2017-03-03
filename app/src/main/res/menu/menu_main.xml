@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.ramnarayanan.foodfinder.MapsActivity">
+      tools:context="com.ramnarayanan.foodfinder.MainActivity">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
@@ -10,10 +10,12 @@
         app:showAsAction="never"/>
     <item android:title="Map"
           android:id="@+id/action_map"
-          android:icon="@android:drawable/ic_dialog_map"
-          app:showAsAction="ifRoom"/>
+          android:icon="@drawable/ic_map_white_48dp"
+          app:showAsAction="ifRoom"
+          tools:icon="@drawable/ic_map_white_48dp"/>
     <item android:title="Search"
           android:id="@+id/action_search"
-          android:icon="@android:drawable/ic_menu_search"
-          app:showAsAction="ifRoom"/>
+          android:icon="@drawable/ic_search_white_48dp"
+          app:showAsAction="ifRoom"
+          tools:icon="@drawable/ic_search_white_48dp"/>
 </menu>
