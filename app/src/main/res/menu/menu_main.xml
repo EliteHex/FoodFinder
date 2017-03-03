@@ -12,7 +12,8 @@
           android:id="@+id/action_map"
           android:icon="@drawable/ic_map_white_48dp"
           app:showAsAction="ifRoom"
-          tools:icon="@drawable/ic_map_white_48dp"/>
+          tools:icon="@drawable/ic_map_white_48dp"
+          android:visible="false"/>
     <item android:title="Search"
           android:id="@+id/action_search"
           android:icon="@drawable/ic_search_white_48dp"

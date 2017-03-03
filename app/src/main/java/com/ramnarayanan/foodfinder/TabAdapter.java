@@ -20,16 +20,27 @@ public class TabAdapter extends FragmentPagerAdapter {
             case 0:
                 return new MapFragment();
             case 1:
-                return PlaceholderFragment.newInstance(position + 1);
-            case 2:
-                return PlaceholderFragment.newInstance(position + 2);
+                return PlaceholderFragment.newInstance(position);
+            //case 2:
+            //    return PlaceholderFragment.newInstance(position);
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        switch (position) {
+            case 0:
+                return "MAP";
+            case 1:
+                return "LIST";
+        }
+        return null;
     }
 }
 

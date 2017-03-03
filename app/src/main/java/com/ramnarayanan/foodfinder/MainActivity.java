@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TabAdapter mTabAdapter;
     private ViewPager mViewPager;
     private LocationManager locationManager;
-    String provider;
+    //String provider;
 
     //private GoogleMap mMap;
 
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         //Disable toolbar
         //activateToolbar(false);
 

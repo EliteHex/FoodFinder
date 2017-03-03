@@ -42,11 +42,11 @@ import static com.google.android.gms.plus.PlusOneDummyView.TAG;
 public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
     public static String TAB_NAME = "Map";
-    private static final int ACCESS_FINE_LOCATION_INT = 10;
 
     private GoogleMap mGoogleMap;
     private LocationManager locationManager;
     private String provider;
+    private static final int ACCESS_FINE_LOCATION_INT = 10;
 
     @Nullable
     @Override
@@ -66,7 +66,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
         //        .findFragmentById(map);
         //mapFragment.getMapAsync(this);
-
         Location location = null;
         if (ActivityCompat.checkSelfPermission(getContext(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -95,6 +94,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         return rootView;
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
@@ -112,6 +112,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         } catch (SecurityException e) {
             e.printStackTrace();
         }
+
+
+        mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                try {
+                    Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
+                    onLocationChanged(location);
+                } catch (SecurityException e) {
+                    Log.e(TAG, "onMyLocationButtonClick: ", new SecurityException(e.getMessage().toString()));
+                    e.printStackTrace();
+                }
+                //LocationServices.FusedLocationApi.requestLocationUpdates()
+                return true;
+            }
+        });
     }
 
     @Override
