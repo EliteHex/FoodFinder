@@ -1,52 +1,82 @@
 package com.ramnarayanan.foodfinder;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+import android.view.View;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 /**
  * Created by Shadow on 3/3/2017.
  */
 
 public class PermissionsManager {
-    private static Map<String, Boolean> permissions_table = new HashMap<>();
-    private static Activity current_activity;
-    private static final int ACCESS_FINE_LOCATION_INT = 10;
+    private static Map<String, Integer> permissions_table = new HashMap<>();
+    private static final String TAG = "PermissionsManager";
+    private static int PERMISSIONS_INT_COUNTER = 1;
 
-    public PermissionsManager(Activity currentActivity) {
-        current_activity = currentActivity;
-    }
 
-    public static boolean getPermissions(String[] requiredPermissions) {
-        if (requiredPermissions.length == 0) return true;
+//    public static Boolean getPermissions(Activity currentActivity, String requiredPermission) {
+//        if (permissions_table.get(requiredPermission)!=null){
+//            if(permissions_table.get(requiredPermission)==PackageManager.PERMISSION_GRANTED){
+//                return true;
+//            }else{
+//                return false;
+//            }
+//        }
+//        return false;
+//    }
 
-        for (String permission : requiredPermissions) {
-            if (permissions_table.get(permission) == null) {
-                ActivityCompat.requestPermissions(current_activity, new String[]{permission}, ACCESS_FINE_LOCATION_INT);
-                return false;
-            } else if (permissions_table.get(permission) == false) {
-                return false;
-            } else if (!checkPermissions(permission)) {
-                return false;
-            }
+//public static void setPermissions() {
+    //permissions_table.put("ACCESS_FINE_LOCATION_INT",1);
+//}
+
+    public static boolean checkPermissions(final Context context, String permission) {
+        final Activity currentActivity = (Activity) context;
+        final String permissionParameter = permission;
+        final View currentView = currentActivity.findViewById(R.id.map);
+
+        if (permissions_table.get(permissionParameter) == null) {
+            permissions_table.put(permissionParameter, PERMISSIONS_INT_COUNTER);
+            PERMISSIONS_INT_COUNTER++;
         }
-        return true;
-    }
 
-    public static void setPermissions() {
-
-    }
-
-    public static boolean checkPermissions(String permission) {
-        if (ActivityCompat.checkSelfPermission(current_activity, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        if (ActivityCompat.checkSelfPermission(currentActivity, permission) == PackageManager.PERMISSION_GRANTED) {
             return true;
-        else
-            return false;
+        } else {
+            Snackbar.make(currentView, "Requires " + permission, Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Grant Access", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.d(TAG, "Snackbar onClick: begins");
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(currentActivity, permissionParameter)) {
+                                Log.d(TAG, "checkPermissions: show dialog true");
+                                ActivityCompat.requestPermissions(currentActivity,
+                                        new String[]{permissionParameter},
+                                        permissions_table.get(permissionParameter));
 
+                            } else {
+                                Log.d(TAG, "checkPermissions: show dialog false");
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                                Log.d(TAG, "Snackbar onClick: Intent Uri is " + uri.toString());
+                                intent.setData(uri);
+                                currentActivity.startActivity(intent);
+                            }
+                            Log.d(TAG, "Snackbar onClick: ends");
+
+                        }
+                    }).show();
+        }
+        return false;
     }
 }

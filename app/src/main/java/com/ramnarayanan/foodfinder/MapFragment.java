@@ -1,7 +1,6 @@
 package com.ramnarayanan.foodfinder;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
@@ -24,11 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -52,6 +48,10 @@ import static com.google.android.gms.plus.PlusOneDummyView.TAG;
 
 public class MapFragment extends Fragment
         implements OnMapReadyCallback,
+        GoogleMap.OnCameraMoveStartedListener,
+        GoogleMap.OnCameraMoveListener,
+        GoogleMap.OnCameraMoveCanceledListener,
+        GoogleMap.OnCameraIdleListener,
         LocationListener,
         GoogleApiClient.OnConnectionFailedListener,
         GetPlacesJSONData.OnDataAvailable {
@@ -65,6 +65,8 @@ public class MapFragment extends Fragment
     private static final int PLACE_PICKER_REQUEST = 20;
     private GoogleApiClient mGoogleApiClient;
 
+
+    //region Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class MapFragment extends Fragment
                 .enableAutoManage(getActivity(), this)
                 .build();
 
+        //set up map fragment with the fragment manager
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         SupportMapFragment mapFragment = new SupportMapFragment();
@@ -85,136 +88,7 @@ public class MapFragment extends Fragment
 
         mapFragment.getMapAsync(this);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-        //        .findFragmentById(map);
-        //mapFragment.getMapAsync(this);
-        Location location = null;
-        if (ActivityCompat.checkSelfPermission(getContext(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INT);
-        }
-
-        if (ActivityCompat.checkSelfPermission(getContext(), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-            if (locationManager != null) {
-                provider = locationManager.getBestProvider(new Criteria(), false);
-                location = locationManager.getLastKnownLocation(provider);
-                if (location != null) {
-                    Log.d(TAG, "onCreate: Location info: Location achieved.");
-                    Log.i("Location info: ", "Location achieved.");
-                    onLocationChanged(location);
-                } else {
-                    Log.d(TAG, "onCreate: Location info: No location.");
-                    Log.i("Location info: ", "No location.");
-                }
-            }
-
-        }
-
         return rootView;
-    }
-
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
-
-        //Satellite View
-        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-
-        // Add a marker in New York and move the camera
-        LatLng newyork = new LatLng(40.7128, -74.0059);
-        mGoogleMap.addMarker(new MarkerOptions().position(newyork).title("Marker in New York").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(newyork));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-        try {
-            mGoogleMap.setMyLocationEnabled(true);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-
-        mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                try {
-                    Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
-                    onLocationChanged(location);
-                } catch (SecurityException e) {
-                    Log.e(TAG, "onMyLocationButtonClick: ", new SecurityException(e.getMessage().toString()));
-                    e.printStackTrace();
-                }
-                //LocationServices.FusedLocationApi.requestLocationUpdates()
-                return true;
-            }
-        });
-
-        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                Intent intent;
-                try {
-                    intent = builder.build(getActivity());
-                    startActivityForResult(intent, PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        //retrieve places data from the Web API
-        getNewData();
-    }
-
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        //handle failed connection here
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Double lat = location.getLatitude();
-        Double lng = location.getLongitude();
-
-        Log.d(TAG, "onLocationChanged: Latitude: " + lat.toString());
-        Log.d(TAG, "onLocationChanged: Longitude: " + lng.toString());
-        Log.i("Latitude: ", lat.toString());
-        Log.i("Longitude: ", lng.toString());
-
-        if (mGoogleMap != null) {
-            mGoogleMap.clear();
-            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Your location"));
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 12));
-        }
-
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-        try {
-            List<Address> listAdresses = geocoder.getFromLocation(lat, lng, 1);
-            if (listAdresses != null && listAdresses.size() > 0) {
-                Log.i("PlaceInfo", listAdresses.get(0).toString());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
     }
 
     @Override
@@ -226,18 +100,13 @@ public class MapFragment extends Fragment
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    // permission denied
                 }
             }
             // other 'case' lines to check for other
             // permissions this app might request
         }
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-//        new Thread(()->{
-//            System.out.println("Hello");
-//        }).start();
     }
 
     @Override
@@ -266,7 +135,160 @@ public class MapFragment extends Fragment
             ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INT);
         }
     }
+    //endregion
 
+    //region Map Listener
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+
+        PermissionsManager.checkPermissions(getContext(), ACCESS_FINE_LOCATION);
+//
+//        if (ActivityCompat.checkSelfPermission(getContext(), ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INT);
+//        }
+//
+        Location location = null;
+        if (PermissionsManager.checkPermissions(getContext(), ACCESS_FINE_LOCATION)) {
+            try {
+                locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+                if (locationManager != null) {
+                    provider = locationManager.getBestProvider(new Criteria(), false);
+                    location = locationManager.getLastKnownLocation(provider);
+                    if (location != null) {
+                        Log.d(TAG, "onCreate: Location info: Location achieved.");
+                        Log.i("Location info: ", "Location achieved.");
+                        onLocationChanged(location);
+                    } else {
+                        Log.d(TAG, "onCreate: Location info: No location.");
+                        Log.i("Location info: ", "No location.");
+                    }
+                }
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Satellite View
+        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        // Add a marker in New York and move the camera
+        LatLng startLatLng;
+        if (location != null) {
+            startLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        } else {
+            startLatLng = new LatLng(40.7128, -74.0059);
+        }
+
+        //mGoogleMap.addMarker(new MarkerOptions().position(newyork).title("Marker in New York").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(startLatLng));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        try {
+            mGoogleMap.setMyLocationEnabled(true);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+        mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                try {
+                    Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
+                    onLocationChanged(location);
+                } catch (SecurityException e) {
+                    Log.e(TAG, "onMyLocationButtonClick: ", new SecurityException(e.getMessage().toString()));
+                    e.printStackTrace();
+                }
+                return true;
+            }
+        });
+//        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(LatLng latLng) {
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//                Intent intent;
+//                try {
+//                    intent = builder.build(getActivity());
+//                    startActivityForResult(intent, PLACE_PICKER_REQUEST);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+
+        //retrieve places data from the Web API
+//        getNewData();
+    }
+    //end region
+
+    //endregion
+
+    //region Connection Failed Listener
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //handle failed connection here
+    }
+    //endregion
+
+    //region Location Listener
+    @Override
+    public void onLocationChanged(Location location) {
+        Double lat = location.getLatitude();
+        Double lng = location.getLongitude();
+
+        Log.d(TAG, "onLocationChanged: Latitude: " + lat.toString());
+        Log.d(TAG, "onLocationChanged: Longitude: " + lng.toString());
+        Log.i("Latitude: ", lat.toString());
+        Log.i("Longitude: ", lng.toString());
+
+        if (mGoogleMap != null) {
+            mGoogleMap.clear();
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Your location"));
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 12));
+        }
+
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        try {
+            List<Address> listAdresses = geocoder.getFromLocation(lat, lng, 1);
+            if (listAdresses != null && listAdresses.size() > 0) {
+                Log.i("PlaceInfo", listAdresses.get(0).toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+    }
+    //endregion
+
+    //region Camera Listeners
+    @Override
+    public void onCameraIdle() {
+    }
+
+    @Override
+    public void onCameraMoveCanceled() {
+    }
+
+    @Override
+    public void onCameraMove() {
+    }
+    @Override
+    public void onCameraMoveStarted(int i) {
+    }
+    //endregion
+
+    //region Data
     @Override
     public void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
@@ -321,7 +343,10 @@ public class MapFragment extends Fragment
 
     public void getNewData() {
         //TODO update with user's current location
+        //locationManager.getLastKnownLocation(locationManager.getBestProvider());
+
         GetPlacesJSONData getPlacesJSONData = new GetPlacesJSONData(this);
         getPlacesJSONData.execute();
     }
+    //endregion
 }
