@@ -127,7 +127,7 @@ public class MapFragment extends Fragment
         LatLng newyork = new LatLng(40.7128, -74.0059);
         mGoogleMap.addMarker(new MarkerOptions().position(newyork).title("Marker in New York").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(newyork));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         try {
             mGoogleMap.setMyLocationEnabled(true);
         } catch (SecurityException e) {
@@ -165,9 +165,10 @@ public class MapFragment extends Fragment
             }
         });
 
-        GetPlacesJSONData getPlacesJSONData = new GetPlacesJSONData(this);
-        getPlacesJSONData.execute();
+        //retrieve places data from the Web API
+        getNewData();
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -308,12 +309,19 @@ public class MapFragment extends Fragment
                     // Setting the position for the marker
                     markerOptions.position(latLng);
                     markerOptions.title(name + " : " + vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_black_18dp));
                     // Placing a marker on the touched position
+
                     Marker m = mGoogleMap.addMarker(markerOptions);
                 }
             }
         });
+    }
+
+    public void getNewData() {
+        //TODO update with user's current location
+        GetPlacesJSONData getPlacesJSONData = new GetPlacesJSONData(this);
+        getPlacesJSONData.execute();
     }
 }

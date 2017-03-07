@@ -1,7 +1,6 @@
 package com.ramnarayanan.foodfinder;
 
 import android.content.Intent;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,10 +20,8 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, android.location.LocationListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 //    private static final int ACCESS_FINE_LOCATION_INT = 10;
@@ -87,20 +84,26 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
     public boolean onOptionsItemSelected(MenuItem item) {
         //Handle menu item clicks
         int id = item.getItemId();
-        if(id == R.id.action_search)
-        {
-            //Create a new intent to open Search Activity
-            //Intent intent = new Intent(this,SearchActivity.class);
-            //startActivity(intent);
+        switch (id) {
+            case R.id.action_search:
+                //Create a new intent to open Search Activity
+                //Intent intent = new Intent(this,SearchActivity.class);
+                //startActivity(intent);
 
-            //Use Google Places API to open the AutoComplete Activity
-            openAutocompleteActivity();
-            return true;
+                //Use Google Places API to open the AutoComplete Activity
+                openAutocompleteActivity();
+                return true;
+            case R.id.action_refresh:
+                MapFragment currentMap = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                if (currentMap != null) {
+                    currentMap.getNewData();
+                }
+                return true;
+            default:
+                //Parent call
+                return super.onOptionsItemSelected(item);
         }
-        //Parent call
-        return super.onOptionsItemSelected(item);
     }
-    //endregion Menu
 
     private void openAutocompleteActivity() {
         try {
@@ -155,89 +158,11 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
                 // the user pressed the back button.
             }
         }
-
     }
 
-    //region Map
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
     }
-
-    @Override
-    public void onLocationChanged(Location location) {
-//        Double lat = location.getLatitude();
-//        Double lng = location.getLongitude();
-//
-//        Log.d(TAG, "onLocationChanged: Latitude: " + lat.toString());
-//        Log.d(TAG, "onLocationChanged: Longitude: " + lng.toString());
-//        Log.i("Latitude: ", lat.toString());
-//        Log.i("Longitude: ", lng.toString());
-//
-//        if (mMap != null) {
-//            mMap.clear();
-//            mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Your location"));
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 12));
-//        }
-//
-//        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-//        try {
-//            List<Address> listAdresses = geocoder.getFromLocation(lat, lng, 1);
-//            if (listAdresses!=null && listAdresses.size()>0)
-//            {
-//                Log.i("PlaceInfo",listAdresses.get(0).toString());
-//            }
-//        }
-//        catch (IOException e)
-//        {
-//            e.printStackTrace();
-//        }
-    }
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-//        mMap = googleMap;
-//
-//        //Satellite View
-//        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-//
-//        // Add a marker in New York and move the camera
-//        LatLng newyork = new LatLng(40.7128, -74.0059);
-//        mMap.addMarker(new MarkerOptions().position(newyork).title("Marker in New York").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(newyork));
-//        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-//        try{
-//            mMap.setMyLocationEnabled(true);
-//        }
-//        catch (SecurityException e){
-//            e.printStackTrace();
-//        }
-
-    }
-    //endregion Map
 
     @Override
     protected void onResume() {

@@ -8,15 +8,21 @@
         android:orderInCategory="100"
         android:title="Settings"
         app:showAsAction="never"/>
+    <item
+        android:title="Refresh"
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_refresh_white_48dp"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:title="Search"
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_white_48dp"
+        app:showAsAction="ifRoom"
+        tools:icon="@drawable/ic_search_white_48dp"/>
     <item android:title="Map"
           android:id="@+id/action_map"
           android:icon="@drawable/ic_map_white_48dp"
           app:showAsAction="ifRoom"
           tools:icon="@drawable/ic_map_white_48dp"
           android:visible="false"/>
-    <item android:title="Search"
-          android:id="@+id/action_search"
-          android:icon="@drawable/ic_search_white_48dp"
-          app:showAsAction="ifRoom"
-          tools:icon="@drawable/ic_search_white_48dp"/>
 </menu>

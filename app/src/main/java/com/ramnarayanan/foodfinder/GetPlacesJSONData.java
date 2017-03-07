@@ -34,7 +34,7 @@ class GetPlacesJSONData extends AsyncTask<String, Integer, String> implements Ge
 
         StringBuilder urlBuild = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         urlBuild.append("location=" + mLatitude + "," + mLongitude)
-                .append("&radius=5000")
+                .append("&radius=500")
                 .append("&types=" + "restaurant")
                 .append("&sensor=true")
                 .append("&key=" + "AIzaSyDSqwO8QnOMqty5laLxP6tEnzZ9P70tBDk");
