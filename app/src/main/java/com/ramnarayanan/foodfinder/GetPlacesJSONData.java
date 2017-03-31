@@ -28,19 +28,19 @@ class GetPlacesJSONData extends AsyncTask<String, Integer, String> implements Ge
         void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status);
     }
 
-    private String createURL() {
-        double mLatitude = 40.7128;
-        double mLongitude = -74.0059;
+    private String createURL(String latitude, String longitude) {
+        //double mLatitude = 40.7128;
+        //double mLongitude = -74.0059;
+
 
         StringBuilder urlBuild = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        urlBuild.append("location=" + mLatitude + "," + mLongitude)
+        urlBuild.append("location=" + latitude + "," + longitude)
                 .append("&radius=500")
                 .append("&types=" + "restaurant")
                 .append("&sensor=true")
                 .append("&key=" + "AIzaSyDSqwO8QnOMqty5laLxP6tEnzZ9P70tBDk");
         //a797e66836c20f9a7d3da4f2edca204587d7b979
         //AIzaSyDSqwO8QnOMqty5laLxP6tEnzZ9P70tBDk
-
         Log.d(TAG, "createURL: " + urlBuild);
         return urlBuild.toString();
     }
@@ -48,7 +48,10 @@ class GetPlacesJSONData extends AsyncTask<String, Integer, String> implements Ge
     //Invoke using execute()
     @Override
     protected String doInBackground(String... params) {
-        String destinationURL = createURL();
+        String latitude = params[0];
+        String longitude = params[1];
+
+        String destinationURL = createURL(latitude, longitude);
         GetRawData getRawData = new GetRawData(this);
         getRawData.runInSameThread(destinationURL);
         return data;

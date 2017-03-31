@@ -18,7 +18,7 @@ public class TabAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new MapFragment();
+                return MapFragment.newInstance(position);
             case 1:
                 return PlaceholderFragment.newInstance(position);
             //case 2:

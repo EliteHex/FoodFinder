@@ -20,8 +20,15 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.HashMap;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity
+        implements MapFragment.OnMapDataRequested,
+        GetPlacesJSONData.OnDataAvailable {
 
     private static final String TAG = "MainActivity";
 //    private static final int ACCESS_FINE_LOCATION_INT = 10;
@@ -31,7 +38,7 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
     private TabAdapter mTabAdapter;
     private ViewPager mViewPager;
     private LocationManager locationManager;
-    //String provider;
+    private List<HashMap<String, String>> mapData;
 
     //private GoogleMap mMap;
 
@@ -52,24 +59,7 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(mViewPager);
-
     }
-
-//    private void activateToolbar(boolean enableHome){
-//        Log.d(TAG, "activateToolbar: starts");
-//        ActionBar actionBar = getSupportActionBar();
-//        if(actionBar==null){
-//            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//            if(toolbar!=null){
-//                setSupportActionBar(toolbar);
-//                actionBar = getSupportActionBar();
-//            }
-//        }
-//        if(actionBar!=null){
-//            actionBar.setDisplayHomeAsUpEnabled(enableHome);
-//        }
-//    }
-
     //region Menu
 
     @Override
@@ -94,9 +84,10 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
                 openAutocompleteActivity();
                 return true;
             case R.id.action_refresh:
-                MapFragment currentMap = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                android.support.v4.app.Fragment currentMap = getSupportFragmentManager().findFragmentById(R.id.map_fragment);
                 if (currentMap != null) {
-                    currentMap.getNewData();
+                    //OnRefreshClicked();
+                    //currentMap.
                 }
                 return true;
             default:
@@ -192,5 +183,43 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
 //        else {
 //            ActivityCompat.requestPermissions(this,new String[]{ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_INT);
 //        }
+    }
+
+    public interface OnRefreshClicked {
+        void onRefreshClicked();
+    }
+
+    @Override
+    public void onMapDataRequested(GoogleMap googleMap) {
+        getNewData(googleMap);
+    }
+
+    @Override
+    //callback from
+    public void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status) {
+        Log.d(TAG, "onDataAvailable: starts");
+        if (status == DownloadStatus.OK) {
+            //loadNewData(data);
+        } else {
+            Log.e(TAG, "onDataAvailable: failed with status " + status);
+        }
+        Log.d(TAG, "onDataAvailable: ends");
+
+        mapData = data;
+    }
+
+    private void sendDataToFragment() {
+        //Bundle bundle = new
+    }
+
+    //query Google REST API using map location data
+    public void getNewData(GoogleMap googleMap) {
+        //use map center location to request data
+        LatLng currentLatLng = googleMap.getCameraPosition().target;
+        String latitude = String.valueOf(currentLatLng.latitude);
+        String longitude = String.valueOf(currentLatLng.longitude);
+
+        GetPlacesJSONData getPlacesJSONData = new GetPlacesJSONData(this);
+        getPlacesJSONData.execute(new String[]{latitude, longitude});
     }
 }

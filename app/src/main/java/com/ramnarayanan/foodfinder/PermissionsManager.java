@@ -42,7 +42,7 @@ public class PermissionsManager {
     public static boolean checkPermissions(final Context context, String permission) {
         final Activity currentActivity = (Activity) context;
         final String permissionParameter = permission;
-        final View currentView = currentActivity.findViewById(R.id.map);
+        final View currentView = currentActivity.findViewById(R.id.map_fragment);
 
         if (permissions_table.get(permissionParameter) == null) {
             permissions_table.put(permissionParameter, PERMISSIONS_INT_COUNTER);

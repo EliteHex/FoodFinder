@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -53,18 +54,34 @@ public class MapFragment extends Fragment
         GoogleMap.OnCameraMoveCanceledListener,
         GoogleMap.OnCameraIdleListener,
         LocationListener,
-        GoogleApiClient.OnConnectionFailedListener,
-        GetPlacesJSONData.OnDataAvailable {
+        GoogleApiClient.OnConnectionFailedListener
+        //DataProviderService.OnDataRequest
+        //MainActivity.OnRefreshClicked
+        //GetPlacesJSONData.OnDataAvailable
+{
 
     public static String TAB_NAME = "Map";
-
+    //map data variables
     private GoogleMap mGoogleMap;
     private LocationManager locationManager;
+    private GoogleApiClient mGoogleApiClient;
+    //provider
     private String provider;
+    //static strings
     private static final int ACCESS_FINE_LOCATION_INT = 10;
     private static final int PLACE_PICKER_REQUEST = 20;
-    private GoogleApiClient mGoogleApiClient;
+    private static final String ARG_SECTION_NUMBER = "map_section";
+    //interface
+    OnMapDataRequested mMapDataRequestedCallback;
 
+    public static MapFragment newInstance(int sectionNumber) {
+        Log.d(TAG, "newInstance: created");
+        MapFragment fragment = new MapFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     //region Fragment
     @Nullable
@@ -83,7 +100,7 @@ public class MapFragment extends Fragment
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         SupportMapFragment mapFragment = new SupportMapFragment();
-        transaction.add(R.id.map, mapFragment);
+        transaction.add(R.id.map_fragment, mapFragment);
         transaction.commit();
 
         mapFragment.getMapAsync(this);
@@ -107,6 +124,18 @@ public class MapFragment extends Fragment
             // permissions this app might request
         }
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        //confirm Activity has implemented callback interface
+        try {
+            mMapDataRequestedCallback = (OnMapDataRequested) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString() + "must implement OnMapDataRequested");
+        }
     }
 
     @Override
@@ -137,10 +166,15 @@ public class MapFragment extends Fragment
     }
     //endregion
 
-    //region Map Listener
+    //region Map
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
+
+        mGoogleMap.setOnCameraIdleListener(this);
+        mGoogleMap.setOnCameraMoveStartedListener(this);
+        mGoogleMap.setOnCameraMoveListener(this);
+        mGoogleMap.setOnCameraMoveCanceledListener(this);
 
         PermissionsManager.checkPermissions(getContext(), ACCESS_FINE_LOCATION);
 //
@@ -218,7 +252,7 @@ public class MapFragment extends Fragment
 //        });
 
         //retrieve places data from the Web API
-//        getNewData();
+        mMapDataRequestedCallback.onMapDataRequested(mGoogleMap);
     }
     //end region
 
@@ -243,8 +277,8 @@ public class MapFragment extends Fragment
         Log.i("Longitude: ", lng.toString());
 
         if (mGoogleMap != null) {
-            mGoogleMap.clear();
-            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Your location"));
+            //mGoogleMap.clear();
+            //mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Your location"));
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 12));
         }
 
@@ -261,11 +295,9 @@ public class MapFragment extends Fragment
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
-
     @Override
     public void onProviderEnabled(String provider) {
     }
-
     @Override
     public void onProviderDisabled(String provider) {
     }
@@ -274,6 +306,9 @@ public class MapFragment extends Fragment
     //region Camera Listeners
     @Override
     public void onCameraIdle() {
+        Toast.makeText(getContext(), "Camera has stopped moving.", Toast.LENGTH_SHORT).show();
+        LatLng currentLatLng = mGoogleMap.getCameraPosition().target;
+        Log.d(TAG, "onCameraIdle: LatLng " + currentLatLng);
     }
 
     @Override
@@ -286,18 +321,27 @@ public class MapFragment extends Fragment
     @Override
     public void onCameraMoveStarted(int i) {
     }
+
+
+//    @Override
+//    public void onRefreshClicked() {
+//
+//    }
+//
+//    @Override
+//    public void GetNewPlacesData() {
+//
+//    }
     //endregion
 
     //region Data
-    @Override
+    public interface OnMapDataRequested {
+        void onMapDataRequested(GoogleMap googleMap);
+    }
+
+    //@Override
     public void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status) {
-        Log.d(TAG, "onDataAvailable: starts");
-        if (status == DownloadStatus.OK) {
-            loadNewData(data);
-        } else {
-            Log.e(TAG, "onDataAvailable: failed with status " + status);
-        }
-        Log.d(TAG, "onDataAvailable: ends");
+        loadNewData(data);
     }
 
     private void loadNewData(List<HashMap<String, String>> dataList) {
@@ -341,12 +385,6 @@ public class MapFragment extends Fragment
         });
     }
 
-    public void getNewData() {
-        //TODO update with user's current location
-        //locationManager.getLastKnownLocation(locationManager.getBestProvider());
 
-        GetPlacesJSONData getPlacesJSONData = new GetPlacesJSONData(this);
-        getPlacesJSONData.execute();
-    }
     //endregion
 }
