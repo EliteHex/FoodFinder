@@ -228,6 +228,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public List<HashMap<String, String>> returnData() {
+        //exposes access to mapData
         return mapData;
     }
 }
