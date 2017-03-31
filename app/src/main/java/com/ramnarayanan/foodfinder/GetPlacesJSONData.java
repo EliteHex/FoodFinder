@@ -17,14 +17,14 @@ class GetPlacesJSONData extends AsyncTask<String, Integer, String> implements Ge
 
     private static final String TAG = "GetPlacesJSONData";
     private String data = null;
-    private final OnDataAvailable mCallBack;
+    private final IJSONDataAvailable mCallBack;
     private List<HashMap<String, String>> mPlaces;
 
-    public GetPlacesJSONData(OnDataAvailable callBack) {
+    public GetPlacesJSONData(IJSONDataAvailable callBack) {
         mCallBack = callBack;
     }
 
-    interface OnDataAvailable {
+    interface IJSONDataAvailable {
         void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status);
     }
 

@@ -54,10 +54,10 @@ public class MapFragment extends Fragment
         GoogleMap.OnCameraMoveCanceledListener,
         GoogleMap.OnCameraIdleListener,
         LocationListener,
-        GoogleApiClient.OnConnectionFailedListener
-        //DataProviderService.OnDataRequest
+        GoogleApiClient.OnConnectionFailedListener,
+        IDataProvider
         //MainActivity.OnRefreshClicked
-        //GetPlacesJSONData.OnDataAvailable
+        //GetPlacesJSONData.IJSONDataAvailable
 {
 
     public static String TAB_NAME = "Map";
@@ -72,7 +72,7 @@ public class MapFragment extends Fragment
     private static final int PLACE_PICKER_REQUEST = 20;
     private static final String ARG_SECTION_NUMBER = "map_section";
     //interface
-    OnMapDataRequested mMapDataRequestedCallback;
+    IMapDataRequested mMapDataRequestedCallback;
 
     public static MapFragment newInstance(int sectionNumber) {
         Log.d(TAG, "newInstance: created");
@@ -132,9 +132,10 @@ public class MapFragment extends Fragment
 
         //confirm Activity has implemented callback interface
         try {
-            mMapDataRequestedCallback = (OnMapDataRequested) context;
+            mMapDataRequestedCallback = (IMapDataRequested) context;
+            ((MainActivity) context).setListener(this);
         } catch (ClassCastException e) {
-            throw new ClassCastException(getActivity().toString() + "must implement OnMapDataRequested");
+            throw new ClassCastException(getActivity().toString() + "must implement IMapDataRequested");
         }
     }
 
@@ -252,7 +253,8 @@ public class MapFragment extends Fragment
 //        });
 
         //retrieve places data from the Web API
-        mMapDataRequestedCallback.onMapDataRequested(mGoogleMap);
+        ///
+        /// mMapDataRequestedCallback.onMapDataRequested(mGoogleMap);
     }
     //end region
 
@@ -321,30 +323,32 @@ public class MapFragment extends Fragment
     @Override
     public void onCameraMoveStarted(int i) {
     }
-
-
-//    @Override
-//    public void onRefreshClicked() {
-//
-//    }
-//
-//    @Override
-//    public void GetNewPlacesData() {
-//
-//    }
     //endregion
 
     //region Data
-    public interface OnMapDataRequested {
+    public interface IMapDataRequested {
         void onMapDataRequested(GoogleMap googleMap);
     }
 
-    //@Override
-    public void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status) {
-        loadNewData(data);
+    @Override
+    public void dataReady() {
+        Log.d(TAG, "dataReady: dataready callback invoked");
+        loadNewData(((MainActivity) getContext()).returnData());
     }
 
+    public void requestInformation() {
+        Log.d(TAG, "requestInformation: requesting map information");
+        mMapDataRequestedCallback.onMapDataRequested(mGoogleMap);
+    }
+
+    //@Override
+//    public void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status) {
+//        loadNewData(data);
+//    }
+
     private void loadNewData(List<HashMap<String, String>> dataList) {
+        if (dataList.isEmpty()) return;
+
         Log.d("Map", "list size: " + dataList.size());
         final List<HashMap<String, String>> places = dataList;
 
@@ -384,7 +388,6 @@ public class MapFragment extends Fragment
             }
         });
     }
-
 
     //endregion
 }

@@ -23,24 +23,23 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements MapFragment.OnMapDataRequested,
-        GetPlacesJSONData.OnDataAvailable {
+        implements MapFragment.IMapDataRequested,
+        GetPlacesJSONData.IJSONDataAvailable {
 
     private static final String TAG = "MainActivity";
-//    private static final int ACCESS_FINE_LOCATION_INT = 10;
-private static int REQUEST_CODE_AUTOCOMPLETE = 1;
-
+    //  private static final int ACCESS_FINE_LOCATION_INT = 10;
+    private static int REQUEST_CODE_AUTOCOMPLETE = 1;
 
     private TabAdapter mTabAdapter;
     private ViewPager mViewPager;
     private LocationManager locationManager;
     private List<HashMap<String, String>> mapData;
-
-    //private GoogleMap mMap;
+    private IDataProvider dataProviderListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +58,9 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(mViewPager);
+
+        //initialize data to an empty list
+        mapData = new ArrayList<>();
     }
     //region Menu
 
@@ -84,11 +86,12 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
                 openAutocompleteActivity();
                 return true;
             case R.id.action_refresh:
-                android.support.v4.app.Fragment currentMap = getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-                if (currentMap != null) {
+                dataProviderListener.requestInformation();
+                //android.support.v4.app.Fragment currentMap = getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+                //if (currentMap != null) {
                     //OnRefreshClicked();
                     //currentMap.
-                }
+                //}
                 return true;
             default:
                 //Parent call
@@ -185,17 +188,14 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
 //        }
     }
 
-    public interface OnRefreshClicked {
-        void onRefreshClicked();
-    }
-
     @Override
+    //callback from MapFragment
     public void onMapDataRequested(GoogleMap googleMap) {
         getNewData(googleMap);
     }
 
     @Override
-    //callback from
+    //callback from GetPlacesJSONData
     public void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
         if (status == DownloadStatus.OK) {
@@ -206,10 +206,14 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
         Log.d(TAG, "onDataAvailable: ends");
 
         mapData = data;
+        if (dataProviderListener != null) {
+            dataProviderListener.dataReady();
+        }
     }
 
-    private void sendDataToFragment() {
-        //Bundle bundle = new
+    //set listener to be used by fragments
+    public void setListener(IDataProvider listener) {
+        this.dataProviderListener = listener;
     }
 
     //query Google REST API using map location data
@@ -221,5 +225,9 @@ private static int REQUEST_CODE_AUTOCOMPLETE = 1;
 
         GetPlacesJSONData getPlacesJSONData = new GetPlacesJSONData(this);
         getPlacesJSONData.execute(new String[]{latitude, longitude});
+    }
+
+    public List<HashMap<String, String>> returnData() {
+        return mapData;
     }
 }
