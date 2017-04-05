@@ -14,7 +14,6 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -47,7 +46,7 @@ import static com.google.android.gms.plus.PlusOneDummyView.TAG;
  * Created by Shadow on 3/2/2017.
  */
 
-public class MapFragment extends Fragment
+public class MapFragment extends BaseFragment
         implements OnMapReadyCallback,
         GoogleMap.OnCameraMoveStartedListener,
         GoogleMap.OnCameraMoveListener,
@@ -133,7 +132,7 @@ public class MapFragment extends Fragment
         //confirm Activity has implemented callback interface
         try {
             mMapDataRequestedCallback = (IMapDataRequested) context;
-            ((MainActivity) context).setListener(this);
+            ((MainActivity) context).setListener(this, "map");
         } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString() + "must implement IMapDataRequested");
         }

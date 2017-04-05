@@ -20,7 +20,7 @@ public class TabAdapter extends FragmentPagerAdapter {
             case 0:
                 return MapFragment.newInstance(position);
             case 1:
-                return PlaceholderFragment.newInstance(position);
+                return RecyclerViewFragment.newInstance(position);
             //case 2:
             //    return PlaceholderFragment.newInstance(position);
         }

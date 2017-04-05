@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
     private LocationManager locationManager;
     private List<HashMap<String, String>> mapData;
-    private IDataProvider dataProviderListener;
+    private IDataProvider dataProviderMapListener;
+    private IDataProvider dataProviderListListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity
                 openAutocompleteActivity();
                 return true;
             case R.id.action_refresh:
-                dataProviderListener.requestInformation();
+                dataProviderMapListener.requestInformation();
                 //android.support.v4.app.Fragment currentMap = getSupportFragmentManager().findFragmentById(R.id.map_fragment);
                 //if (currentMap != null) {
                     //OnRefreshClicked();
@@ -206,14 +207,25 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "onDataAvailable: ends");
 
         mapData = data;
-        if (dataProviderListener != null) {
-            dataProviderListener.dataReady();
+        if (dataProviderMapListener != null) {
+            dataProviderMapListener.dataReady();
         }
+        if (dataProviderListListener != null) {
+            dataProviderListListener.dataReady();
+        }
+
     }
 
-    //set listener to be used by fragments
-    public void setListener(IDataProvider listener) {
-        this.dataProviderListener = listener;
+    //set listeners to be used by fragments
+    public void setListener(IDataProvider listener, String fragmentname) {
+        switch (fragmentname) {
+            case "map":
+                this.dataProviderMapListener = listener;
+                break;
+            case "list":
+                this.dataProviderListListener = listener;
+                break;
+        }
     }
 
     //query Google REST API using map location data
