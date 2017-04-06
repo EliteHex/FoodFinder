@@ -6,4 +6,6 @@ public class MapPlace {
     public String latitude;
     public String longitude;
     public String reference;
+    public String placeid;
+    public String icon;
 }

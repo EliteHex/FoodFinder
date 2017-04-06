@@ -60,9 +60,6 @@ public class PlacesJSONParser {
         //HashMap<String, String> place = new HashMap<String, String>();
         String placeName = "-NA-";
         String vicinity = "-NA-";
-        String latitude = "";
-        String longitude = "";
-        String reference = "";
 
         MapPlace mapPlace = new MapPlace();
 
@@ -77,15 +74,19 @@ public class PlacesJSONParser {
                 vicinity = jPlace.getString("vicinity");
             }
 
-            latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
-            longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
-            reference = jPlace.getString("reference");
+            String latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
+            String longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
+            String reference = jPlace.getString("reference");
+            String placeid = jPlace.getString("place_id");
+            String icon = jPlace.getString("icon");
 
             mapPlace.placeName = placeName;
             mapPlace.vicinity = vicinity;
             mapPlace.latitude = latitude;
             mapPlace.longitude = longitude;
             mapPlace.reference = reference;
+            mapPlace.placeid = placeid;
+            mapPlace.icon = icon;
 
             //place.put("place_name", placeName);
             //place.put("vicinity", vicinity);

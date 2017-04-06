@@ -24,7 +24,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity
     private TabAdapter mTabAdapter;
     private ViewPager mViewPager;
     private LocationManager locationManager;
-    private List<HashMap<String, String>> mapData;
+    private List<MapPlace> mapData;
     private IDataProvider dataProviderMapListener;
     private IDataProvider dataProviderListListener;
 
@@ -197,7 +196,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     //callback from GetPlacesJSONData
-    public void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status) {
+    public void onDataAvailable(List<MapPlace> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
         if (status == DownloadStatus.OK) {
             //loadNewData(data);
@@ -239,7 +238,7 @@ public class MainActivity extends AppCompatActivity
         getPlacesJSONData.execute(new String[]{latitude, longitude});
     }
 
-    public List<HashMap<String, String>> returnData() {
+    public List<MapPlace> returnData() {
         //exposes access to mapData
         return mapData;
     }

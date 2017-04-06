@@ -2,6 +2,8 @@ package com.ramnarayanan.foodfinder;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -33,13 +35,15 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.R.attr.name;
 import static com.google.android.gms.plus.PlusOneDummyView.TAG;
 
 /**
@@ -345,44 +349,47 @@ public class MapFragment extends BaseFragment
 //        loadNewData(data);
 //    }
 
-    private void loadNewData(List<HashMap<String, String>> dataList) {
+    private void loadNewData(List<MapPlace> dataList) {
         if (dataList.isEmpty()) return;
 
         Log.d("Map", "list size: " + dataList.size());
-        final List<HashMap<String, String>> places = dataList;
+        final List<MapPlace> places = dataList;
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
-                // Clears all the existing markers;
                 mGoogleMap.clear();
 
-                for (int i = 0; i < places.size(); i++) {
+                for (MapPlace item : places) {
+                    final MarkerOptions markerOptions = new MarkerOptions();
+                    double lat = Double.parseDouble(item.latitude);
+                    double lng = Double.parseDouble(item.longitude);
 
-                    // Creating a marker
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    // Getting a place from the places list
-                    HashMap<String, String> hmPlace = places.get(i);
-                    // Getting latitude of the place
-                    double lat = Double.parseDouble(hmPlace.get("lat"));
-                    // Getting longitude of the place
-                    double lng = Double.parseDouble(hmPlace.get("lng"));
-                    // Getting name
-                    String name = hmPlace.get("place_name");
-                    Log.d("Map", "place: " + name);
-
-                    // Getting vicinity
-                    String vicinity = hmPlace.get("vicinity");
                     LatLng latLng = new LatLng(lat, lng);
-                    // Setting the position for the marker
                     markerOptions.position(latLng);
-                    markerOptions.title(name + " : " + vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                    //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_black_18dp));
-                    // Placing a marker on the touched position
+                    markerOptions.title(item.placeName + " : " + item.vicinity);
+                    Picasso.with(getContext())
+                            .load(item.icon)
+                            .into(new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                                }
+
+                                @Override
+                                public void onBitmapFailed(Drawable errorDrawable) {
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                }
+
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                }
+                            });
 
                     Marker m = mGoogleMap.addMarker(markerOptions);
+                    Log.d(TAG, "New map marker: " + name);
                 }
             }
         });
