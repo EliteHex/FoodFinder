@@ -6,7 +6,6 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,21 +17,22 @@ class GetPlacesJSONData extends AsyncTask<String, Integer, String> implements Ge
     private static final String TAG = "GetPlacesJSONData";
     private String data = null;
     private final IJSONDataAvailable mCallBack;
-    private List<HashMap<String, String>> mPlaces;
+    //private List<HashMap<String, String>> mPlaces;
+    private List<MapPlace> mPlaces;
 
     public GetPlacesJSONData(IJSONDataAvailable callBack) {
         mCallBack = callBack;
     }
 
     interface IJSONDataAvailable {
-        void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status);
+        //void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status);
+        void onDataAvailable(List<MapPlace> data, DownloadStatus status);
+
     }
 
     private String createURL(String latitude, String longitude) {
         //double mLatitude = 40.7128;
         //double mLongitude = -74.0059;
-
-
         StringBuilder urlBuild = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         urlBuild.append("location=" + latitude + "," + longitude)
                 .append("&radius=500")
@@ -82,7 +82,6 @@ class GetPlacesJSONData extends AsyncTask<String, Integer, String> implements Ge
                 Log.d("Exception", e.toString());
             }
             mCallBack.onDataAvailable(mPlaces, DownloadStatus.OK);
-            //return places;
         }
     }
 }

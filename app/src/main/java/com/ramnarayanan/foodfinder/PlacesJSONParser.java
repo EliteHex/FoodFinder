@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,8 +17,8 @@ public class PlacesJSONParser {
     /***
      * Receives a JSON Object and returns a list
      */
-    public List<HashMap<String, String>> parse(JSONObject jObject) {
-
+    public List<MapPlace> parse(JSONObject jObject) {
+        //List<HashMap<String, String>>
         JSONArray jPlaces = null;
         try {
             /** Retrieves all the elements in the 'places' array */
@@ -33,10 +32,12 @@ public class PlacesJSONParser {
         return getPlaces(jPlaces);
     }
 
-    private List<HashMap<String, String>> getPlaces(JSONArray jPlaces) {
+    private List<MapPlace> getPlaces(JSONArray jPlaces) {
         int placesCount = jPlaces.length();
-        List<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
-        HashMap<String, String> place = null;
+        //List<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
+        //HashMap<String, String> place = null;
+        List<MapPlace> placesList = new ArrayList<>();
+        MapPlace place;
 
         /** Taking each place, parses and adds to list object */
         for (int i = 0; i < placesCount; i++) {
@@ -54,14 +55,16 @@ public class PlacesJSONParser {
     /**
      * Parsing the Place JSON object
      */
-    private HashMap<String, String> getPlace(JSONObject jPlace) {
+    private MapPlace getPlace(JSONObject jPlace) {
 
-        HashMap<String, String> place = new HashMap<String, String>();
+        //HashMap<String, String> place = new HashMap<String, String>();
         String placeName = "-NA-";
         String vicinity = "-NA-";
         String latitude = "";
         String longitude = "";
         String reference = "";
+
+        MapPlace mapPlace = new MapPlace();
 
         try {
             // Extracting Place name, if available
@@ -78,15 +81,23 @@ public class PlacesJSONParser {
             longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
             reference = jPlace.getString("reference");
 
-            place.put("place_name", placeName);
-            place.put("vicinity", vicinity);
-            place.put("lat", latitude);
-            place.put("lng", longitude);
-            place.put("reference", reference);
+            mapPlace.placeName = placeName;
+            mapPlace.vicinity = vicinity;
+            mapPlace.latitude = latitude;
+            mapPlace.longitude = longitude;
+            mapPlace.reference = reference;
+
+            //place.put("place_name", placeName);
+            //place.put("vicinity", vicinity);
+            //place.put("lat", latitude);
+            //place.put("lng", longitude);
+            //place.put("reference", reference);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return place;
+        return mapPlace;
     }
+
 }
+
