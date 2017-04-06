@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Shadow on 4/4/2017.
  */
@@ -31,8 +34,8 @@ public class RecyclerViewFragment extends BaseFragment {
     protected RecyclerView mRecyclerView;
     protected PlacesRecyclerViewAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected String[] mDataset;
-
+    //protected String[] mDataset;
+    protected List<MapPlace> mDataset;
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -69,7 +72,8 @@ public class RecyclerViewFragment extends BaseFragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        initDataset();
+//        initDataset();
+        mDataset = new ArrayList<>();
         mAdapter = new PlacesRecyclerViewAdapter(mDataset);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
@@ -126,16 +130,17 @@ public class RecyclerViewFragment extends BaseFragment {
      * Generates Strings for RecyclerView's adapter. This data would usually come
      * from a local content provider or remote server.
      */
-    private void initDataset() {
-        mDataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataset[i] = "This is element #" + i;
-        }
-    }
+//    private void initDataset() {
+//        mDataset = new String[DATASET_COUNT];
+//        for (int i = 0; i < DATASET_COUNT; i++) {
+//            mDataset[i] = "This is element #" + i;
+//        }
+//    }
 
     @Override
     public void dataReady() {
         Log.d(TAG, "dataReady: dataready callback invoked");
+        mAdapter.loadNewData(((MainActivity) getContext()).returnData());
     }
 
     @Override

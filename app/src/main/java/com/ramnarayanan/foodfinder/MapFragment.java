@@ -344,11 +344,6 @@ public class MapFragment extends BaseFragment
         mMapDataRequestedCallback.onMapDataRequested(mGoogleMap);
     }
 
-    //@Override
-//    public void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status) {
-//        loadNewData(data);
-//    }
-
     private void loadNewData(List<MapPlace> dataList) {
         if (dataList.isEmpty()) return;
 
@@ -394,6 +389,5 @@ public class MapFragment extends BaseFragment
             }
         });
     }
-
     //endregion
 }
