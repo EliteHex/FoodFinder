@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Data;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Shadow on 3/6/2017.
  */
 
-class GetPlacesJSONData
+public class GetPlacesJSONData
         extends AsyncTask<String, Integer, String>
         implements GetRawData.OnDownloadComplete {
 
@@ -26,7 +26,7 @@ class GetPlacesJSONData
         mCallBack = callBack;
     }
 
-    interface IJSONDataAvailable {
+    public interface IJSONDataAvailable {
         //void onDataAvailable(List<HashMap<String, String>> data, DownloadStatus status);
         void onDataAvailable(List<MapPlace> data, DownloadStatus status);
 

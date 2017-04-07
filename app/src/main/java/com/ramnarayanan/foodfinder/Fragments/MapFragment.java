@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Fragments;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -35,7 +35,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.ramnarayanan.foodfinder.Fragments.BaseFragment;
+import com.ramnarayanan.foodfinder.Data.IDataProvider;
+import com.ramnarayanan.foodfinder.Activities.MainActivity;
+import com.ramnarayanan.foodfinder.Data.MapPlace;
+import com.ramnarayanan.foodfinder.Data.PermissionsManager;
+import com.ramnarayanan.foodfinder.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 

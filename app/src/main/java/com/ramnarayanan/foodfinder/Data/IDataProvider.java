@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Data;
 
 /**
  * Created by Shadow on 3/31/2017.

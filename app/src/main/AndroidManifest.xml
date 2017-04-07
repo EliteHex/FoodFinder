@@ -35,7 +35,7 @@
             />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -44,8 +44,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".SearchActivity"
-                  android:parentActivityName=".MainActivity"
+        <activity
+            android:name=".Activities.SearchActivity"
+            android:parentActivityName=".Activities.MainActivity"
             >
         </activity>
     </application>

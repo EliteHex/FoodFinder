@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Data;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -12,12 +12,7 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-/**
- * Created by Shadow on 11/30/2016.
- */
-enum DownloadStatus {
-    IDLE, PROCESSING, NOT_INITIALIZED, FAILED_OR_EMPTY, OK
-};
+;
 
 
 class GetRawData extends AsyncTask<String, Void, String> {

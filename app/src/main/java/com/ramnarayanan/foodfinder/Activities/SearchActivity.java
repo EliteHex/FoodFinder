@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Activities;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+
+import com.ramnarayanan.foodfinder.R;
 
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "SearchActivity";

@@ -1,7 +1,7 @@
 package com.ramnarayanan.foodfinder.Fragments;
 import android.support.v4.app.Fragment;
 
-import com.ramnarayanan.foodfinder.IDataProvider;
+import com.ramnarayanan.foodfinder.Data.IDataProvider;
 
 /**
  * Created by Shadow on 4/5/2017.

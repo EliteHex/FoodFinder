@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Fragments;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ramnarayanan.foodfinder.Fragments.BaseFragment;
+import com.ramnarayanan.foodfinder.Activities.MainActivity;
+import com.ramnarayanan.foodfinder.Data.MapPlace;
+import com.ramnarayanan.foodfinder.Adapters.PlacesRecyclerViewAdapter;
+import com.ramnarayanan.foodfinder.R;
 
 import java.util.ArrayList;
 import java.util.List;

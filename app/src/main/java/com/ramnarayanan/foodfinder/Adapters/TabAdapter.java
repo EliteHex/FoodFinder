@@ -1,8 +1,11 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.ramnarayanan.foodfinder.Fragments.MapFragment;
+import com.ramnarayanan.foodfinder.Fragments.RecyclerViewFragment;
 
 /**
  * Created by Shadow on 3/2/2017.

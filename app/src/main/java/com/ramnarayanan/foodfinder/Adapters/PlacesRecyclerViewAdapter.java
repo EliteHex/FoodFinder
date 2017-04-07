@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Adapters;
 
 import android.net.Uri;
 import android.os.Handler;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ramnarayanan.foodfinder.Data.MapPlace;
+import com.ramnarayanan.foodfinder.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
         this.mDataSet = dataset;
     }
 
-    void loadNewData(List<MapPlace> placesList) {
+    public void loadNewData(List<MapPlace> placesList) {
         if (placesList.isEmpty()) return;
 
         mDataSet = placesList;

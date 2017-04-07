@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Data;
 
 import org.json.JSONArray;
 import org.json.JSONException;

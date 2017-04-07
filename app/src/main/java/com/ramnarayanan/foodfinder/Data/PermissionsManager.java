@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Data;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
+
+import com.ramnarayanan.foodfinder.R;
 
 import java.util.HashMap;
 import java.util.Map;

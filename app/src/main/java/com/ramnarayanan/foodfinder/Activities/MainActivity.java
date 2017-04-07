@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder;
+package com.ramnarayanan.foodfinder.Activities;
 
 import android.content.Intent;
 import android.location.LocationManager;
@@ -22,6 +22,13 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.ramnarayanan.foodfinder.Data.DownloadStatus;
+import com.ramnarayanan.foodfinder.Data.GetPlacesJSONData;
+import com.ramnarayanan.foodfinder.Data.IDataProvider;
+import com.ramnarayanan.foodfinder.Data.MapPlace;
+import com.ramnarayanan.foodfinder.Fragments.MapFragment;
+import com.ramnarayanan.foodfinder.R;
+import com.ramnarayanan.foodfinder.Adapters.TabAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
