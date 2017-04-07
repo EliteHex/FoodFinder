@@ -1,5 +1,6 @@
 package com.ramnarayanan.foodfinder;
 
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 /**
@@ -18,6 +21,9 @@ import java.util.List;
 
 public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecyclerViewAdapter.PlacesViewHolder> {
     private static final String TAG = "PlacesRecyclerViewAdapt";
+    private static final String placePictureAPI = "https://maps.googleapis.com/maps/api/place/photo?";
+    private static final String APIKEY = "AIzaSyDSqwO8QnOMqty5laLxP6tEnzZ9P70tBDk";
+
     //private Context mContext;
     private List<MapPlace> mDataSet;
 //    private List<MapPlace> mPlaceList;
@@ -56,9 +62,20 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
             holder.thumbnail.setImageResource(R.drawable.placeholder);
             holder.title.setText(String.valueOf(position));
         } else {
-            holder.thumbnail.setImageResource(R.drawable.placeholder);
-
             MapPlace placeItem = mDataSet.get(position);
+
+            holder.thumbnail.setImageResource(R.drawable.placeholder);
+            if (placeItem.photoreference != "") {
+                StringBuilder searchstring = new StringBuilder(placePictureAPI);
+                searchstring.append("maxwidth=400&maxheight=400")
+                        .append("&photoreference=" + placeItem.photoreference)
+                        .append("&key=" + APIKEY);
+                Uri googleUri = Uri.parse(searchstring.toString());
+                Picasso.with(holder.itemView.getContext())
+                        .load(googleUri)
+                        .into(holder.thumbnail);
+            }
+
             holder.title.setText(placeItem.placeName);
         }
 

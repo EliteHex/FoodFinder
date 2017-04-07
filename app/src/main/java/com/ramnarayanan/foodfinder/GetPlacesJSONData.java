@@ -12,12 +12,14 @@ import java.util.List;
  * Created by Shadow on 3/6/2017.
  */
 
-class GetPlacesJSONData extends AsyncTask<String, Integer, String> implements GetRawData.OnDownloadComplete {
+class GetPlacesJSONData
+        extends AsyncTask<String, Integer, String>
+        implements GetRawData.OnDownloadComplete {
 
     private static final String TAG = "GetPlacesJSONData";
     private String data = null;
     private final IJSONDataAvailable mCallBack;
-    //private List<HashMap<String, String>> mPlaces;
+    private static final String APIKEY = "AIzaSyDSqwO8QnOMqty5laLxP6tEnzZ9P70tBDk";
     private List<MapPlace> mPlaces;
 
     public GetPlacesJSONData(IJSONDataAvailable callBack) {
@@ -30,29 +32,42 @@ class GetPlacesJSONData extends AsyncTask<String, Integer, String> implements Ge
 
     }
 
-    private String createURL(String latitude, String longitude) {
-        //double mLatitude = 40.7128;
-        //double mLongitude = -74.0059;
-        StringBuilder urlBuild = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        urlBuild.append("location=" + latitude + "," + longitude)
-                //.append("&radius=500")
-                .append("&rankby=distance")
-                .append("&types=" + "restaurant")
-                .append("&sensor=true")
-                .append("&key=" + "AIzaSyDSqwO8QnOMqty5laLxP6tEnzZ9P70tBDk");
-        //a797e66836c20f9a7d3da4f2edca204587d7b979
-        //AIzaSyDSqwO8QnOMqty5laLxP6tEnzZ9P70tBDk
+    private String createURL(String... params) {
+        String searchtype = params[0];
+        StringBuilder urlBuild = new StringBuilder();
+        switch (searchtype) {
+            case "places":
+                String latitude = params[1];
+                String longitude = params[2];
+                urlBuild.append("https://maps.googleapis.com/maps/api/place/nearbysearch/json?")
+                        .append("location=" + latitude + "," + longitude)
+                        .append("&radius=500")
+                        .append("&rankby=prominence")
+                        .append("&types=" + "restaurant")
+                        .append("&sensor=true")
+                        .append("&key=" + APIKEY);
+                break;
+            case "photos":
+                String photoReference = params[1];
+                urlBuild.append("https://maps.googleapis.com/maps/api/place/photo?")
+                        .append("&maxwidth=400")
+                        .append("&photoreference=" + photoReference)
+                        .append("&key=" + APIKEY);
+                break;
+        }
         Log.d(TAG, "createURL: " + urlBuild);
         return urlBuild.toString();
+
     }
 
     //Invoke using execute()
     @Override
     protected String doInBackground(String... params) {
-        String latitude = params[0];
-        String longitude = params[1];
+        //String latitude = params[0];
+        //String longitude = params[1];
+        //String destinationURL = createURL(latitude, longitude);
 
-        String destinationURL = createURL(latitude, longitude);
+        String destinationURL = createURL(params);
         GetRawData getRawData = new GetRawData(this);
         getRawData.runInSameThread(destinationURL);
         return data;

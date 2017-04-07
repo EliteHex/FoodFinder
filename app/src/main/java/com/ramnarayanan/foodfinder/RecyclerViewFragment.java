@@ -1,6 +1,7 @@
 package com.ramnarayanan.foodfinder;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.ramnarayanan.foodfinder.Fragments.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +75,12 @@ public class RecyclerViewFragment extends BaseFragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                super.onDraw(c, parent, state);
+            }
+        });
 //        initDataset();
         mDataset = new ArrayList<>();
         mAdapter = new PlacesRecyclerViewAdapter(mDataset);

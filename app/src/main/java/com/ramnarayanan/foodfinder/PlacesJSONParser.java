@@ -44,7 +44,7 @@ public class PlacesJSONParser {
             try {
                 /** Call getPlace with place JSON object to parse the place */
                 place = getPlace((JSONObject) jPlaces.get(i));
-                placesList.add(place);
+                if (place != null) placesList.add(place);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -79,7 +79,11 @@ public class PlacesJSONParser {
             String reference = jPlace.getString("reference");
             String placeid = jPlace.getString("place_id");
             String icon = jPlace.getString("icon");
-
+            String photoreference = "";
+            if (jPlace.has("photos")) {
+                photoreference = jPlace.getJSONArray("photos").getJSONObject(0).getString("photo_reference");
+            }
+            
             mapPlace.placeName = placeName;
             mapPlace.vicinity = vicinity;
             mapPlace.latitude = latitude;
@@ -87,6 +91,7 @@ public class PlacesJSONParser {
             mapPlace.reference = reference;
             mapPlace.placeid = placeid;
             mapPlace.icon = icon;
+            mapPlace.photoreference = photoreference;
 
             //place.put("place_name", placeName);
             //place.put("vicinity", vicinity);

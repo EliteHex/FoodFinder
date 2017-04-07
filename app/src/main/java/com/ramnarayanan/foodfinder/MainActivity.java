@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity
         String longitude = String.valueOf(currentLatLng.longitude);
 
         GetPlacesJSONData getPlacesJSONData = new GetPlacesJSONData(this);
-        getPlacesJSONData.execute(new String[]{latitude, longitude});
+        getPlacesJSONData.execute(new String[]{"places", latitude, longitude});
     }
 
     public List<MapPlace> returnData() {

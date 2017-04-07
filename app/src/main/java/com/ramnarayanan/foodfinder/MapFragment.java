@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ramnarayanan.foodfinder.Fragments.BaseFragment;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 

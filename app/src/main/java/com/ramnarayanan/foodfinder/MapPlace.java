@@ -8,4 +8,5 @@ public class MapPlace {
     public String reference;
     public String placeid;
     public String icon;
+    public String photoreference;
 }
