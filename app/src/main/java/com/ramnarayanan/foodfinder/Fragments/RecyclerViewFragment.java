@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ramnarayanan.foodfinder.Activities.MainActivity;
-import com.ramnarayanan.foodfinder.Data.MapPlace;
+import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
 import com.ramnarayanan.foodfinder.Adapters.PlacesRecyclerViewAdapter;
+import com.ramnarayanan.foodfinder.Interfaces.IRecyclerClick;
+import com.ramnarayanan.foodfinder.Listeners.RecyclerItemClickListener;
 import com.ramnarayanan.foodfinder.R;
 
 import java.util.ArrayList;
@@ -23,7 +25,10 @@ import java.util.List;
  * Created by Shadow on 4/4/2017.
  */
 
-public class RecyclerViewFragment extends BaseFragment {
+public class RecyclerViewFragment
+        extends BaseFragment
+        implements IRecyclerClick {
+
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
@@ -35,12 +40,9 @@ public class RecyclerViewFragment extends BaseFragment {
     }
 
     protected LayoutManagerType mCurrentLayoutManagerType;
-    //protected RadioButton mLinearLayoutRadioButton;
-    //protected RadioButton mGridLayoutRadioButton;
     protected RecyclerView mRecyclerView;
     protected PlacesRecyclerViewAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    //protected String[] mDataset;
     protected List<MapPlace> mDataset;
     /**
      * The fragment argument representing the section number for this
@@ -84,7 +86,9 @@ public class RecyclerViewFragment extends BaseFragment {
                 super.onDraw(c, parent, state);
             }
         });
-//        initDataset();
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), mRecyclerView, this));
+
         mDataset = new ArrayList<>();
         mAdapter = new PlacesRecyclerViewAdapter(mDataset);
         mRecyclerView.setAdapter(mAdapter);
@@ -138,21 +142,21 @@ public class RecyclerViewFragment extends BaseFragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    /**
-     * Generates Strings for RecyclerView's adapter. This data would usually come
-     * from a local content provider or remote server.
-     */
-//    private void initDataset() {
-//        mDataset = new String[DATASET_COUNT];
-//        for (int i = 0; i < DATASET_COUNT; i++) {
-//            mDataset[i] = "This is element #" + i;
-//        }
-//    }
+    @Override
+    public void onItemClick(View view, int position) {
+        MapPlace curr = mDataset.get(position);
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+
+    }
 
     @Override
     public void dataReady() {
         Log.d(TAG, "dataReady: dataready callback invoked");
-        mAdapter.loadNewData(((MainActivity) getContext()).returnData());
+        mDataset = ((MainActivity) getContext()).returnData();
+        mAdapter.loadNewData(mDataset);
     }
 
     @Override

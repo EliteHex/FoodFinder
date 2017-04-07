@@ -35,10 +35,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.ramnarayanan.foodfinder.Data.IDataProvider;
 import com.ramnarayanan.foodfinder.Activities.MainActivity;
-import com.ramnarayanan.foodfinder.Data.MapPlace;
-import com.ramnarayanan.foodfinder.Data.PermissionsManager;
+import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
+import com.ramnarayanan.foodfinder.Data.Access.PermissionsManager;
+import com.ramnarayanan.foodfinder.Interfaces.IDataProvider;
+import com.ramnarayanan.foodfinder.Interfaces.IMapDataRequested;
 import com.ramnarayanan.foodfinder.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -333,11 +334,7 @@ public class MapFragment extends BaseFragment
     }
     //endregion
 
-    //region Data
-    public interface IMapDataRequested {
-        void onMapDataRequested(GoogleMap googleMap);
-    }
-
+    //region Data Access
     @Override
     public void dataReady() {
         Log.d(TAG, "dataReady: dataready callback invoked");

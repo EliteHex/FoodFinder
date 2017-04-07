@@ -1,4 +1,6 @@
-package com.ramnarayanan.foodfinder.Data;
+package com.ramnarayanan.foodfinder.Data.Access;
+
+import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,7 +1,6 @@
 package com.ramnarayanan.foodfinder.Activities;
 
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -22,19 +21,19 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.ramnarayanan.foodfinder.Data.DownloadStatus;
-import com.ramnarayanan.foodfinder.Data.GetPlacesJSONData;
-import com.ramnarayanan.foodfinder.Data.IDataProvider;
-import com.ramnarayanan.foodfinder.Data.MapPlace;
-import com.ramnarayanan.foodfinder.Fragments.MapFragment;
-import com.ramnarayanan.foodfinder.R;
 import com.ramnarayanan.foodfinder.Adapters.TabAdapter;
+import com.ramnarayanan.foodfinder.Data.Access.DownloadStatus;
+import com.ramnarayanan.foodfinder.Data.Access.GetPlacesJSONData;
+import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
+import com.ramnarayanan.foodfinder.Interfaces.IDataProvider;
+import com.ramnarayanan.foodfinder.Interfaces.IMapDataRequested;
+import com.ramnarayanan.foodfinder.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements MapFragment.IMapDataRequested,
+        implements IMapDataRequested,
         GetPlacesJSONData.IJSONDataAvailable {
 
     private static final String TAG = "MainActivity";
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     private TabAdapter mTabAdapter;
     private ViewPager mViewPager;
-    private LocationManager locationManager;
+    //private LocationManager locationManager;
     private List<MapPlace> mapData;
     private IDataProvider dataProviderMapListener;
     private IDataProvider dataProviderListListener;

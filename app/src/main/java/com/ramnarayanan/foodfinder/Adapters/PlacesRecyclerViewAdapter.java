@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ramnarayanan.foodfinder.Data.MapPlace;
+import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
 import com.ramnarayanan.foodfinder.R;
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +25,7 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
     private static final String TAG = "PlacesRecyclerViewAdapt";
     private static final String placePictureAPI = "https://maps.googleapis.com/maps/api/place/photo?";
     private static final String APIKEY = "AIzaSyDSqwO8QnOMqty5laLxP6tEnzZ9P70tBDk";
-
+    private int selectedPosition = 0;
     //private Context mContext;
     private List<MapPlace> mDataSet;
 //    private List<MapPlace> mPlaceList;
@@ -60,6 +60,22 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
     public void onBindViewHolder(PlacesViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: Element" + position + " set.");
 
+//        final int finalposition = position;
+//        if(selectedPosition == finalposition){
+//            holder.itemView.setBackgroundColor(Color.CYAN);
+//        }else{
+//            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+//        }
+        //holder.itemView.setSelected(selectedPosition == position);
+//        holder.itemView.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                notifyItemChanged(selectedPosition);
+//                selectedPosition = finalposition;
+//                notifyItemChanged(selectedPosition);
+//            }
+//        });
+
         if (mDataSet == null || mDataSet.size() == 0) {
             holder.thumbnail.setImageResource(R.drawable.placeholder);
             holder.title.setText(String.valueOf(position));
@@ -80,22 +96,6 @@ public class PlacesRecyclerViewAdapter extends RecyclerView.Adapter<PlacesRecycl
 
             holder.title.setText(placeItem.placeName);
         }
-
-        /*
-        if((mPhotosList==null)||mPhotosList.size()==0){
-            holder.thumbnail.setImageResource(R.drawable.placeholder);
-            holder.title.setText(R.string.empty_photo);
-        }else{
-            Photo photoItem = mPhotosList.get(position);
-            Log.d(TAG, "onBindViewHolder: " + photoItem.getTitle() + "->" + position);
-            Picasso.with(mContext).load(photoItem.getImage())
-                    .error(R.drawable.placeholder)
-                    .placeholder(R.drawable.placeholder)
-                    .into(holder.thumbnail);
-
-            holder.title.setText(photoItem.getTitle());
-        }
-        */
     }
 
     @Override

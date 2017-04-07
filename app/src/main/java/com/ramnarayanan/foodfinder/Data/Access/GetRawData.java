@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder.Data;
+package com.ramnarayanan.foodfinder.Data.Access;
 
 import android.os.AsyncTask;
 import android.util.Log;

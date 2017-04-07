@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder.Data;
+package com.ramnarayanan.foodfinder.Data.Models;
 
 public class MapPlace {
     public String placeName;

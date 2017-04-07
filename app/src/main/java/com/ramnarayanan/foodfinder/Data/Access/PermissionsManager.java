@@ -1,4 +1,4 @@
-package com.ramnarayanan.foodfinder.Data;
+package com.ramnarayanan.foodfinder.Data.Access;
 
 import android.app.Activity;
 import android.content.Context;
