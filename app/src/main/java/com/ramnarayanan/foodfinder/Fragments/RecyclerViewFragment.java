@@ -1,6 +1,7 @@
 package com.ramnarayanan.foodfinder.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.ramnarayanan.foodfinder.Activities.MainActivity;
-import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
 import com.ramnarayanan.foodfinder.Adapters.PlacesRecyclerViewAdapter;
+import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
 import com.ramnarayanan.foodfinder.Interfaces.IRecyclerClick;
 import com.ramnarayanan.foodfinder.Listeners.RecyclerItemClickListener;
 import com.ramnarayanan.foodfinder.R;
@@ -33,6 +37,7 @@ public class RecyclerViewFragment
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
     private static final int DATASET_COUNT = 60;
+    private static final int PLACE_PICKER_REQUEST = 20;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -145,6 +150,17 @@ public class RecyclerViewFragment
     @Override
     public void onItemClick(View view, int position) {
         MapPlace curr = mDataset.get(position);
+
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        Intent intent;
+        try {
+            intent = builder.build(getActivity());
+            startActivityForResult(intent, PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
