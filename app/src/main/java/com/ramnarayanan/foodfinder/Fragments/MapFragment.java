@@ -24,9 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,8 +34,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ramnarayanan.foodfinder.Activities.MainActivity;
-import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
 import com.ramnarayanan.foodfinder.Data.Access.PermissionsManager;
+import com.ramnarayanan.foodfinder.Data.Models.MapPlace;
 import com.ramnarayanan.foodfinder.Interfaces.IDataProvider;
 import com.ramnarayanan.foodfinder.Interfaces.IMapDataRequested;
 import com.ramnarayanan.foodfinder.R;
@@ -63,7 +61,6 @@ public class MapFragment extends BaseFragment
         GoogleMap.OnCameraMoveCanceledListener,
         GoogleMap.OnCameraIdleListener,
         LocationListener,
-        GoogleApiClient.OnConnectionFailedListener,
         IDataProvider
         //MainActivity.OnRefreshClicked
         //GetPlacesJSONData.IJSONDataAvailable
@@ -98,12 +95,6 @@ public class MapFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
-
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(getActivity(), this)
-                .build();
 
         //set up map fragment with the fragment manager
         FragmentManager manager = getFragmentManager();
@@ -270,10 +261,10 @@ public class MapFragment extends BaseFragment
     //endregion
 
     //region Connection Failed Listener
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    //@Override
+    //public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         //handle failed connection here
-    }
+    //}
     //endregion
 
     //region Location Listener

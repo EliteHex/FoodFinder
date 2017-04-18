@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.ramnarayanan.foodfinder.Activities.MainActivity;
 import com.ramnarayanan.foodfinder.Adapters.PlacesRecyclerViewAdapter;
@@ -150,6 +151,10 @@ public class RecyclerViewFragment
     @Override
     public void onItemClick(View view, int position) {
         MapPlace curr = mDataset.get(position);
+
+        //Places.GeoDataApi.getPlaceById()
+        Places.GeoDataApi.getPlaceById(super.mGoogleApiClient, curr.placeid);
+        //super.
 
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         Intent intent;
