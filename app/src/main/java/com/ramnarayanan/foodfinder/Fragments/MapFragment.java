@@ -43,6 +43,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -79,6 +80,7 @@ public class MapFragment extends BaseFragment
     private static final String ARG_SECTION_NUMBER = "map_section";
     //interface
     IMapDataRequested mMapDataRequestedCallback;
+    private ArrayList<Marker> mMarkerArrayList;
 
     public static MapFragment newInstance(int sectionNumber) {
         Log.d(TAG, "newInstance: created");
@@ -104,6 +106,8 @@ public class MapFragment extends BaseFragment
         transaction.commit();
 
         mapFragment.getMapAsync(this);
+
+        mMarkerArrayList = new ArrayList<>();
 
         return rootView;
     }
@@ -236,9 +240,62 @@ public class MapFragment extends BaseFragment
                 return true;
             }
         });
-//        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//            @Override
-//            public void onMapClick(LatLng latLng) {
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                Marker current = null;
+
+                for (Marker m : mMarkerArrayList) {
+                    if (m.getPosition() == latLng) {
+                        current = m;
+                    }
+                }
+            }
+        });
+        mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+
+            }
+        });
+
+//                if(current!=null){
+//                    current.showInfoWindow();
+//                }
+
+//                Marker current = mGoogleMap
+//                        .addMarker(new MarkerOptions()
+//                                            .position(latLng)
+//                                            .title("Current"));
+
+//                current.showInfoWindow();
+
+//                PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
+//                            .getCurrentPlace(mGoogleApiClient, PlaceFilter);
+//                result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
+//                        @Override
+//                        public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+//                            for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+//                                Log.i(TAG, String.format("Place '%s' has likelihood: %g",
+//                                        placeLikelihood.getPlace().getName(),
+//                                        placeLikelihood.getLikelihood()));
+//                            }
+//                            likelyPlaces.release();
+//                        }
+    }
+
+    ;
+
 //                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 //                Intent intent;
 //                try {
@@ -249,13 +306,11 @@ public class MapFragment extends BaseFragment
 //                } catch (GooglePlayServicesNotAvailableException e) {
 //                    e.printStackTrace();
 //                }
-//            }
-//        });
+
 
         //retrieve places data from the Web API
         ///
-        /// mMapDataRequestedCallback.onMapDataRequested(mGoogleMap);
-    }
+    /// mMapDataRequestedCallback.onMapDataRequested(mGoogleMap)
     //end region
 
     //endregion
@@ -357,6 +412,7 @@ public class MapFragment extends BaseFragment
                     LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(item.placeName + " : " + item.vicinity);
+                    markerOptions.draggable(true);
                     Picasso.with(getContext())
                             .load(item.icon)
                             .into(new Target() {
@@ -377,6 +433,7 @@ public class MapFragment extends BaseFragment
                             });
 
                     Marker m = mGoogleMap.addMarker(markerOptions);
+                    mMarkerArrayList.add(m);
                     Log.d(TAG, "New map marker: " + name);
                 }
             }

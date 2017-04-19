@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.ramnarayanan.foodfinder.Activities.MainActivity;
@@ -152,20 +154,32 @@ public class RecyclerViewFragment
     public void onItemClick(View view, int position) {
         MapPlace curr = mDataset.get(position);
 
-        //Places.GeoDataApi.getPlaceById()
-        Places.GeoDataApi.getPlaceById(super.mGoogleApiClient, curr.placeid);
-        //super.
+        Places.GeoDataApi.getPlaceById(super.mGoogleApiClient, curr.placeid)
+                .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(@NonNull PlaceBuffer places) {
+                        if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                            final Place myPlace = places.get(0);
+                            Log.i(TAG, "Place found: " + myPlace.getName());
+                        } else {
+                            Log.e(TAG, "Place not found");
+                        }
+                        places.release();
+                    }
+                });
 
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         Intent intent;
-        try {
-            intent = builder.build(getActivity());
-            startActivityForResult(intent, PLACE_PICKER_REQUEST);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
+
+        //builder.
+//        try {
+//            intent = builder.build(getActivity());
+//            startActivityForResult(intent, PLACE_PICKER_REQUEST);
+//        } catch (GooglePlayServicesRepairableException e) {
+//            e.printStackTrace();
+//        } catch (GooglePlayServicesNotAvailableException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
